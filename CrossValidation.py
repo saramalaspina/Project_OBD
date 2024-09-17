@@ -1,17 +1,16 @@
-import numpy as np
 import time
 
 from NeuralNetwork import *
-from PlotUtils import *
-from FileUtils import *
+from UtilsFunctions import *
 import concurrent.futures
 
+from UtilsFile import add_csv_line
 
-def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, lambda_list, dir, activation_function="relu", momentum=True, learning_rate=0.1, num_epochs=50, print_debug=True, mini_batch_size=64):
 
-    #cambia nomi
+def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, lambda_list, dir, activation_fn="relu", momentum=True, learning_rate=0.1, num_epochs=50, print_debug=True, mini_batch_size=64):
+    # cambia nomi
     best_parameters = None
-    best_rmse float = 0.0
+    best_rmse = 0.0
     best_neurons = None
     best_lambda = None
     error_list_final_model = None
@@ -23,16 +22,15 @@ def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, la
 
     def evaluate_model_CV(layers_neurons, lambda_reg, reg_type):
 
-            # accuracy list va riadattato al nostro caso
+        # accuracy list va riadattato al nostro caso
 
-        parameters, error, error_list, accuracy_list = model_with_regularization(
-            X_train, Y_train, layers_neurons, dir, learning_rate, num_epochs, activation_function,
-            lambda_reg, momentum, reg_type, mini_batch_size=mini_batch_size)
+        parameters, error, error_list, metric_list = model(X_train, Y_train, layers_neurons, learning_rate, num_epochs, activation_fn, lambda_reg, momentum, reg_type, mini_batch_size)
 
-        rmse = evaluate_model(X_valid, parameters, Y_valid, activation_function)
+        rmse = evaluate_model_rmse(X_valid, parameters, Y_valid, activation_fn)
 
         if print_debug:
-            print(f"The RMSE for model {layers_neurons} with {regularization_list[reg_type]} regularization and lambda {lambda_reg}: ", rmse)
+            print(
+                f"The RMSE for model {layers_neurons} with {regularization_list[reg_type]} regularization and lambda {lambda_reg}: ", rmse)
 
         return {
             'parameters': parameters,
@@ -40,7 +38,7 @@ def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, la
             'layers_neurons': layers_neurons,
             'lambda': lambda_reg,
             'error_list': error_list,
-            'accuracy_list': accuracy_list, #cambiare accuracy list
+            'metric_list': metric_list,
             'reg_type': reg_type
         }
 
@@ -52,7 +50,7 @@ def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, la
             best_neurons = result['layers_neurons']
             best_lambda = result['lambda']
             error_list_final_model = result['error_list']
-            accuracy_list_final_model = result['accuracy_list'] #cambiare
+            accuracy_list_final_model = result['metric_list']
             reg_type = result['reg_type']
 
     results = []
@@ -75,7 +73,8 @@ def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, la
             results.append(result)
 
     for result in results:
-        add_csv_line(result['layers_neurons'], regularization_list[result['reg_type']], result['lambda'], result['rmse'], dir, activation_function)
+        add_csv_line(result['layers_neurons'], regularization_list[result['reg_type']], result['lambda'],
+                     result['rmse'], dir, activation_fn)
         update_best_model(result)
 
     end = time.time()
@@ -88,11 +87,10 @@ def cross_validation(X_train, Y_train, X_valid, Y_valid, layers_neurons_list, la
         text = f"Best configuration is {best_neurons} using {reg_type} with lambda {best_lambda}"
 
     print(text)
-    with open(f'plots/{dir}/{activation_function}/final_result', "w") as file:
+    with open(f'plots/{dir}/{activation_fn}/final_result', "w") as file:
         file.write(f"Time spent for cross validation is {int(min)}:{sec:.2f} min\n\n")
         file.write(text + "\n\n")
 
-    plotError(error_list_final_model, len(error_list_final_model), dir, activation_fn=activation_function)
+    plotError(error_list_final_model, len(error_list_final_model), dir, activation_fn=activation_fn)
 
     return best_parameters
-

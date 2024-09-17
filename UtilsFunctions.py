@@ -1,37 +1,21 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Define activation functions that will be used in forward propagation
 def tanh(Z):
-
     A = np.tanh(Z)
-
     return A, Z
 
 
 def relu(Z):
-
     A = np.maximum(0, Z)
-
     return A, Z
-
-
-# Compute cross-entropy cost
-def compute_cost(AL, y):
-
-    m = y.shape[1]
-    cost = - (1 / m) * np.sum(
-        np.multiply(y, np.log(AL + 1e-16)) + np.multiply(1 - y, np.log(1 - AL + 1e-16)))
-
-    return cost
 
 # Define derivative of activation functions w.r.t z that will be used in back-propagation
 def tanh_gradient(dA, Z):
-
     A, Z = tanh(Z)
     dZ = dA * (1 - np.square(A))
-
     return dZ
-
 
 def relu_gradient(dA, Z):
 
@@ -39,7 +23,6 @@ def relu_gradient(dA, Z):
     dZ = np.multiply(dA, np.int64(A > 0))
 
     return dZ
-
 
 # define helper functions that will be used in L-model back-prop
 def linear_backward(dZ, cache):
@@ -59,7 +42,6 @@ def linear_backward(dZ, cache):
 
 # Roll a dictionary into a single vector.
 def dictionary_to_vector(params_dict):
-
     count = 0
     for key in params_dict.keys():
         new_vector = np.reshape(params_dict[key], (-1, 1))
@@ -68,5 +50,39 @@ def dictionary_to_vector(params_dict):
         else:
             theta_vector = np.concatenate((theta_vector, new_vector))
         count += 1
-
     return theta_vector
+
+
+def create_mini_batches(X, y, mini_batch_size):
+    m = X.shape[1]
+    mini_batches = []
+
+    permutation = np.random.permutation(m)
+    shuffled_X = X[:, permutation]
+    shuffled_y = y[:, permutation]
+
+    num_complete_minibatches = m // mini_batch_size
+    for k in range(num_complete_minibatches):
+        mini_batch_X = shuffled_X[:, k * mini_batch_size:(k + 1) * mini_batch_size]
+        mini_batch_y = shuffled_y[:, k * mini_batch_size:(k + 1) * mini_batch_size]
+        mini_batches.append((mini_batch_X, mini_batch_y))
+
+    if m % mini_batch_size != 0:
+        mini_batch_X = shuffled_X[:, num_complete_minibatches * mini_batch_size:]
+        mini_batch_y = shuffled_y[:, num_complete_minibatches * mini_batch_size:]
+        mini_batches.append((mini_batch_X, mini_batch_y))
+
+    return mini_batches
+
+
+def plotError(error_list, num_iterations, dir, model_name="final_model_error", activation_fn="relu"):
+    iterations = list(range(0, num_iterations))
+    plt.figure(figsize=(10, 6))
+    plt.plot(iterations, error_list, marker='', linestyle='-', color='b', linewidth=1)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Loss through training')
+    plt.grid(True)
+    plt.savefig('Plots/' + dir + '/' + activation_fn + "/" + model_name + '.png')
+    #plt.show()
+    plt.close()

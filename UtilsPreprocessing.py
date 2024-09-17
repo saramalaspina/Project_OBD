@@ -6,7 +6,6 @@ from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
-import seaborn as sns
 plt.rc("axes", titleweight = "bold", titlesize = 18, titlepad = 10)
 
 def train_val_test_split(X, y):
