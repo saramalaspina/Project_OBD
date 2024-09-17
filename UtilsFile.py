@@ -1,12 +1,11 @@
 import csv
 import os
 
-def add_csv_line(modello, reg, lambd, tr_acc, val_acc, dir, activation_fn):
+def add_csv_line(model, regularization, lambd, rmse, activation_fn,  dir):
     # Apro il file in modalità 'append' per aggiungere righe senza sovrascrivere
     with open('plots/' + dir + '/' + activation_fn + '/results.csv', mode='a', newline='') as file:
-        nomi_colonne = ['modello', 'reg', 'lambda', 'tr acc', 'val acc']
-        nuova_riga = {'modello': modello, 'reg': reg, 'lambda': lambd, 'tr acc': tr_acc, 'val acc': val_acc}
-
+        nomi_colonne = ['model', 'regularization', 'lambda', 'rmse', 'activation_fn']
+        nuova_riga = {'model': model, 'regularization': regularization, 'lambda': lambd, 'rmse': rmse, 'activation_fn': activation_fn}
         writer = csv.DictWriter(file, fieldnames=nomi_colonne)
 
         # Scrivo l'intestazione (solo se il file è vuoto)

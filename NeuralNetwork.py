@@ -2,7 +2,7 @@ from Backpropagation import *
 from UtilsFunctions import *
 
 
-def model(X, y, layers_neurons, learning_rate=0.01, num_epochs=50, activation_fn="relu", lambda_reg=0, momentum=True, reg_type = 0, mini_batch_size=64):
+def model(X, y, num_neurons, learning_rate=0.01, num_epochs=50, activation_fn="relu", lambda_r=0, momentum=True, regularization = 0, mini_batch_size=64):
 
     # get number of examples
     m = X.shape[1]
@@ -11,16 +11,14 @@ def model(X, y, layers_neurons, learning_rate=0.01, num_epochs=50, activation_fn
     np.random.seed(1)
 
     # initialize parameters
-    parameters, previous_parameters = initialize_parameters(layers_neurons, activation_fn)
+    parameters, previous_parameters = initialize_parameters(num_neurons, activation_fn)
 
     # intialize cost and metric list
     metric_list = []
     cost_list = []
 
     for i in range(num_epochs):
-
         diminishing_stepsize = learning_rate / (1 + 0.01 * i)
-
         # Creare mini-batch
         mini_batches = create_mini_batches(X, y, mini_batch_size)
 
@@ -34,14 +32,14 @@ def model(X, y, layers_neurons, learning_rate=0.01, num_epochs=50, activation_fn
            # reg_cost = compute_cost_reg(AL, mini_batch_y, parameters, lambda_reg, reg_type)
 
             # Backward propagation
-            grads = L_model_backward_reg(AL, mini_batch_y, caches, activation_fn, lambda_reg, reg_type)
+            grads = L_model_backward_reg(AL, mini_batch_y, caches, activation_fn, lambda_r, regularization)
 
             # Update parameters
             parameters, previous_parameters = update_parameters(parameters, grads, diminishing_stepsize, previous_parameters, momentum)
 
 
         AL, caches = L_model_forward(X, parameters, activation_fn)
-        reg_cost = compute_cost_reg(AL, y, parameters, lambda_reg, reg_type)
+        reg_cost = compute_cost_reg(AL, y, parameters, lambda_r, regularization)
 
         # Evaluate model on full training set
         rmse = evaluate_model_rmse(X, parameters, y, activation_fn)
@@ -52,7 +50,7 @@ def model(X, y, layers_neurons, learning_rate=0.01, num_epochs=50, activation_fn
 
 
 # metodo per calcolare la funzione costo regolarizzata
-def compute_cost_reg(AL, y, parameters, lambda_reg=0, reg_type=0):
+def compute_cost_reg(AL, y, parameters, lambda_r=0, regularization=0):
     # number of examples
     m = y.shape[1]
     # compute mean squared error (MSE)
@@ -61,10 +59,10 @@ def compute_cost_reg(AL, y, parameters, lambda_reg=0, reg_type=0):
     parameters_vector = dictionary_to_vector(parameters)
 
     # compute the regularization penalty
-    if reg_type == 2:
-        regularization_penalty = (lambda_reg / (2 * m)) * np.sum(np.square(parameters_vector))
-    elif reg_type == 1:
-        regularization_penalty = (lambda_reg / (2 * m)) * np.sum(np.abs(parameters_vector))
+    if regularization == 2:
+        regularization_penalty = (lambda_r / (2 * m)) * np.sum(np.square(parameters_vector))
+    elif regularization == 1:
+        regularization_penalty = (lambda_r / (2 * m)) * np.sum(np.abs(parameters_vector))
     else:
         regularization_penalty = 0
 
@@ -81,27 +79,27 @@ def evaluate_model_rmse(X, parameters, y, activation_fn):
     return rmse
 
 
-def initialize_parameters(layers_neurons, activation_fn):
+def initialize_parameters(num_neurons, activation_fn):
     assert activation_fn == "relu" or activation_fn == "tanh"
     np.random.seed(1)
     parameters = {}
     previous_parameters = {}
-    L = len(layers_neurons)
+    L = len(num_neurons)
 
     for l in range(1,L):
         if activation_fn == "relu":
             #He initialization for relu
-            parameters["W" + str(l)] = np.random.randn(layers_neurons[l], layers_neurons[l - 1]) * np.sqrt(2 / layers_neurons[l - 1])
+            parameters["W" + str(l)] = np.random.randn(num_neurons[l], num_neurons[l - 1]) * np.sqrt(2 / num_neurons[l - 1])
         else:
             #Xavier/Glorot initialization for tanh
-            parameters["W" + str(l)] = np.random.randn(layers_neurons[l], layers_neurons[l - 1]) * np.sqrt(2 / (layers_neurons[l - 1] + layers_neurons[l]))
+            parameters["W" + str(l)] = np.random.randn(num_neurons[l], num_neurons[l - 1]) * np.sqrt(2 / (num_neurons[l - 1] + num_neurons[l]))
 
-        parameters["b" + str(l)] = np.zeros((layers_neurons[l], 1))
-        previous_parameters["W" + str(l)] = np.zeros((layers_neurons[l], layers_neurons[l - 1]))
-        previous_parameters["b" + str(l)] = np.zeros((layers_neurons[l], 1))
+        parameters["b" + str(l)] = np.zeros((num_neurons[l], 1))
+        previous_parameters["W" + str(l)] = np.zeros((num_neurons[l], num_neurons[l - 1]))
+        previous_parameters["b" + str(l)] = np.zeros((num_neurons[l], 1))
 
-        assert parameters["W" + str(l)].shape == (layers_neurons[l], layers_neurons[l - 1])
-        assert parameters["b" + str(l)].shape == (layers_neurons[l], 1)
+        assert parameters["W" + str(l)].shape == (num_neurons[l], num_neurons[l - 1])
+        assert parameters["b" + str(l)].shape == (num_neurons[l], 1)
 
     return parameters, previous_parameters
 

@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.compose import make_column_transformer
@@ -21,10 +20,8 @@ def train_val_test_split(X, y):
 
 def encoding_and_standardization(X_train, X_val, X_test, numerical = None, categorical = None):
 
-    if (numerical == None and categorical == None):
+    if numerical is None and categorical is None:
         return None
-
-    preprocessor = None
 
     #numerical features standardization
     transformer_num = make_pipeline(
@@ -38,12 +35,12 @@ def encoding_and_standardization(X_train, X_val, X_test, numerical = None, categ
         OneHotEncoder(handle_unknown='ignore'),
     )
 
-    if (numerical != None and categorical != None):
+    if numerical is not None and categorical is not None:
         preprocessor = make_column_transformer(
             (transformer_num, numerical), 
             (transformer_cat, categorical)
         )
-    elif numerical != None:
+    elif numerical is not None:
         preprocessor = make_column_transformer(
             (transformer_num, numerical)
         )

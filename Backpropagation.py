@@ -47,7 +47,7 @@ def linear_activation_forward(A_prev, W, b, activation_fn):
     return A, cache
 
 
-def L_model_backward_reg(AL, y, caches, activation_fn="relu",lambda_reg=0, reg_type = 0):
+def L_model_backward_reg(AL, y, caches, activation_fn="relu", lambda_r=0, regularization = 0):
 
     y = y.reshape(AL.shape)
     L = len(caches)
@@ -55,15 +55,15 @@ def L_model_backward_reg(AL, y, caches, activation_fn="relu",lambda_reg=0, reg_t
 
     dAL = AL - y
 
-    grads["dA" + str(L - 1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward_reg(dAL, caches[L - 1], "linear", lambda_reg, reg_type)
+    grads["dA" + str(L - 1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward_reg(dAL, caches[L - 1], "linear", lambda_r, regularization)
 
     for l in range(L - 1, 0, -1):
         current_cache = caches[l - 1]
-        grads["dA" + str(l - 1)], grads["dW" + str(l)], grads["db" + str(l)] = linear_activation_backward_reg( grads["dA" + str(l)], current_cache, activation_fn, lambda_reg, reg_type)
+        grads["dA" + str(l - 1)], grads["dW" + str(l)], grads["db" + str(l)] = linear_activation_backward_reg(grads["dA" + str(l)], current_cache, activation_fn, lambda_r, regularization)
     return grads
 
 
-def linear_activation_backward_reg(dA, cache, activation_fn="relu", lambda_reg=0, reg_type=0):
+def linear_activation_backward_reg(dA, cache, activation_fn="relu", lambda_r=0, regularization=0):
     linear_cache, activation_cache = cache
 
     if activation_fn == "relu":
@@ -73,20 +73,20 @@ def linear_activation_backward_reg(dA, cache, activation_fn="relu", lambda_reg=0
     elif activation_fn == "linear":
         dZ = dA
 
-    dA_prev, dW, db = linear_backward_reg(dZ, linear_cache, lambda_reg, reg_type)
+    dA_prev, dW, db = linear_backward_reg(dZ, linear_cache, lambda_r, regularization)
 
     return dA_prev, dW, db
 
 
-def linear_backward_reg(dZ, cache, lambda_reg=0, reg_type=0):
+def linear_backward_reg(dZ, cache, lambda_r=0, regularization=0):
 
     A_prev, W, b = cache
     m = A_prev.shape[1]
 
-    if(reg_type == 2):
-        dW = (1 / m) * np.dot(dZ, A_prev.T) + (lambda_reg / m) * W
+    if(regularization == 2):
+        dW = (1 / m) * np.dot(dZ, A_prev.T) + (lambda_r / m) * W
     else:
-        dW = (1 / m) * np.dot(dZ, A_prev.T) + (lambda_reg / m) * np.sign(W)
+        dW = (1 / m) * np.dot(dZ, A_prev.T) + (lambda_r / m) * np.sign(W)
     db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
     dA_prev = np.dot(W.T, dZ)
 
