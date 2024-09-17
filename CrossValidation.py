@@ -92,4 +92,4 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
 
     plotError(error_list_final_model, len(error_list_final_model), dir, best_activation_fn)
 
-    return best_parameters
+    return best_parameters, best_activation_fn

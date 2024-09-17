@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from UtilsPreprocessing import *
 
 
@@ -50,5 +51,16 @@ def AirQualityData():
 
     #encoding and standardization
     X_train, X_val, X_test = encoding_and_standardization(X_train, X_val, X_test, numerical = numerical_features)
+
+    y_train = y_train.to_numpy()
+    y_val = y_val.to_numpy()
+    y_test = y_test.to_numpy()
+
+    X_train = X_train.T
+    y_train = y_train.reshape(1, -1)
+    X_val = X_val.T
+    y_val = y_val.reshape(1, -1)
+    X_test = X_test.T
+    y_test = y_test.reshape(1, -1)
 
     return X_train, X_val, X_test, y_train, y_val, y_test
