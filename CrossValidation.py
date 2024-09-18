@@ -12,8 +12,8 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     best_rmse = 0.0
     best_neurons = None
     best_lambda = None
+    best_error = None
     error_list_final_model = None
-    metric_list_final_model = None #lo usiamo??
     best_activation_fn = None
     best_regularization = 0
     regularization_list = ["None", "L1", "L2"]
@@ -23,7 +23,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
 
     def evaluate_model_CV(num_neurons, lambda_r, regularization, activation_fn):
 
-        parameters, error, error_list, metric_list = model(X_train, Y_train, num_neurons, learning_rate, num_epochs, activation_fn, lambda_r, momentum, regularization, mini_batch_size)
+        parameters, error, error_list = model(X_train, Y_train, num_neurons, learning_rate, num_epochs, activation_fn, lambda_r, momentum, regularization, mini_batch_size)
         rmse = evaluate_model_rmse(X_val, parameters, Y_val, activation_fn)
 
         if print_debug:
@@ -36,20 +36,20 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
             'rmse': rmse,
             'num_neurons': num_neurons,
             'lambda': lambda_r,
+            'error': error,
             'error_list': error_list,
-            'metric_list': metric_list,
             'regularization': regularization
         }
 
     def update_best_model(result):
-        nonlocal best_rmse, best_parameters, best_neurons, best_lambda, error_list_final_model, metric_list_final_model, best_activation_fn, best_regularization
+        nonlocal best_rmse, best_parameters, best_neurons, best_lambda, best_error, error_list_final_model, best_activation_fn, best_regularization
         if result['rmse'] > best_rmse:
             best_rmse = result['rmse']
             best_parameters = result['parameters']
             best_neurons = result['num_neurons']
             best_lambda = result['lambda']
+            best_error = result['error']
             error_list_final_model = result['error_list']
-            metric_list_final_model = result['metric_list']
             best_regularization = result['regularization']
 
     results = []
@@ -73,7 +73,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
             results.append(result)
 
     for result in results:
-        add_csv_line(result['num_neurons'], regularization_list[result['regularization']], result['lambda'], result['rmse'], result['activation_fn'], dir)
+        add_csv_line(result['num_neurons'], regularization_list[result['regularization']], result['lambda'], result['error'], result['rmse'], result['activation_fn'], dir)
         update_best_model(result)
 
     end = time.time()
@@ -86,6 +86,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
         text = f"Best configuration is {best_neurons} using {regularization_list[best_regularization]} with lambda {best_lambda} and activation function {best_activation_fn}"
 
     print(text)
+
     with open(f'plots/{dir}/{best_activation_fn}/final_result', "w") as file:
         file.write(f"Time spent for cross validation is {int(min)}:{sec:.2f} min\n\n")
         file.write(text + "\n\n")

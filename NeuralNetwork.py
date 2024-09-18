@@ -28,9 +28,6 @@ def model(X, y, num_neurons, learning_rate=0.01, num_epochs=50, activation_fn="r
             # Forward propagation
             AL, caches = L_model_forward(mini_batch_X, parameters, activation_fn)
 
-            # Calculate regularized cost (MSE + regularization)
-           # reg_cost = compute_cost_reg(AL, mini_batch_y, parameters, lambda_reg, reg_type)
-
             # Backward propagation
             grads = L_model_backward_reg(AL, mini_batch_y, caches, activation_fn, lambda_r, regularization)
 
@@ -41,12 +38,9 @@ def model(X, y, num_neurons, learning_rate=0.01, num_epochs=50, activation_fn="r
         AL, caches = L_model_forward(X, parameters, activation_fn)
         reg_cost = compute_cost_reg(AL, y, parameters, lambda_r, regularization)
 
-        # Evaluate model on full training set
-        rmse = evaluate_model_rmse(X, parameters, y, activation_fn)
         cost_list.append(reg_cost)
-        metric_list.append(rmse)
 
-    return parameters, reg_cost, cost_list, metric_list
+    return parameters, reg_cost, cost_list
 
 
 # metodo per calcolare la funzione costo regolarizzata
