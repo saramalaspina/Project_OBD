@@ -55,28 +55,25 @@ def L_model_backward_reg(AL, y, caches, activation_fn="relu", lambda_r=0, regula
 
     dAL = AL - y
 
-    grads["dA" + str(L - 1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward_reg(dAL, caches[L - 1], "linear", lambda_r, regularization)
+    grads["dA" + str(L - 1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_backward_reg(dAL, caches[L-1], lambda_r, regularization)
 
     for l in range(L - 1, 0, -1):
         current_cache = caches[l - 1]
         grads["dA" + str(l - 1)], grads["dW" + str(l)], grads["db" + str(l)] = linear_activation_backward_reg(grads["dA" + str(l)], current_cache, activation_fn, lambda_r, regularization)
     return grads
 
-
 def linear_activation_backward_reg(dA, cache, activation_fn="relu", lambda_r=0, regularization=0):
+
     linear_cache, activation_cache = cache
 
     if activation_fn == "relu":
         dZ = relu_gradient(dA, activation_cache)
     elif activation_fn == "tanh":
         dZ = tanh_gradient(dA, activation_cache)
-    elif activation_fn == "linear":
-        dZ = dA
 
     dA_prev, dW, db = linear_backward_reg(dZ, linear_cache, lambda_r, regularization)
 
     return dA_prev, dW, db
-
 
 def linear_backward_reg(dZ, cache, lambda_r=0, regularization=0):
 
