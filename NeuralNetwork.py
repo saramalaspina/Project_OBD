@@ -103,6 +103,10 @@ def update_parameters(parameters, grads, learning_rate, previous_parameters, mom
     prev_parameters = parameters
 
     for l in range(1, L + 1):
+        # Gradient clipping for dW and db
+        grads["dW" + str(l)] = np.clip(grads["dW" + str(l)], -5, 5)
+        grads["db" + str(l)] = np.clip(grads["db" + str(l)], -5, 5)
+
         if momentum:
             parameters["W" + str(l)] = parameters["W" + str(l)] - learning_rate * grads["dW" + str(l)] + beta * (parameters["W" + str(l)] - previous_parameters["W" + str(l)])
             parameters["b" + str(l)] = parameters["b" + str(l)] - learning_rate * grads["db" + str(l)] + beta * (parameters["b" + str(l)] - previous_parameters["b" + str(l)])

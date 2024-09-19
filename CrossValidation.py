@@ -92,6 +92,6 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
         file.write(f"Time spent for cross validation is {int(min)}:{sec:.2f} min\n\n")
         file.write(text + "\n\n")
 
-    plotError(error_list_final_model, len(error_list_final_model), dir, best_activation_fn)
+    plotError(error_list_final_model, len(error_list_final_model), dir, activation_fn=best_activation_fn)
 
     return best_parameters, best_activation_fn
