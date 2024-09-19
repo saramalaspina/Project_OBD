@@ -25,7 +25,7 @@ def main():
 
     # definisci possibili scelte per cross validation
     input_layer = X_train.shape[0]
-    num_neurons_list = [[input_layer, 64, 1], [input_layer, 128, 1], [input_layer, 64, 32, 1], [input_layer, 128, 32, 1], [input_layer, 128, 64, 1], [input_layer, 128, 64, 32, 1]]
+    num_neurons_list = [[input_layer, 64, 1], [input_layer, 128, 1], [input_layer, 64, 32, 1], [input_layer, 128, 32, 1], [input_layer, 128, 64, 1], [input_layer, 128, 64, 32, 1], [input_layer, 128, 64, 64, 1]]
     lambda_list = [1e-3, 1e-1]
     activation_fn_list = ["relu", "tanh"]
     minibatch_size_list = [32]
