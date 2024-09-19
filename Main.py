@@ -2,6 +2,7 @@ from scipy.stats import moment
 
 from AirQualityPreprocessing import *
 from CrossValidation import *
+from SeoulBikePreprocessing import SeoulBikeData
 
 
 def main():
@@ -17,16 +18,19 @@ def main():
         X_train, X_val, X_test, y_train, y_val, y_test = AirQualityData()
         dir = "airquality"
     elif dataset == "2":
-        return 0
+        X_train, X_val, X_test, y_train, y_val, y_test = SeoulBikeData()
+        dir = "seoulbike"
     else:
         return 0
 
     # definisci possibili scelte per cross validation
     input_layer = X_train.shape[0]
-    num_neurons_list = [[input_layer, 10, 20, 1], [input_layer, 50, 30, 1]]  # da scegliere
-    lambda_list = [0.01, 0.1, 0.5]
+    num_neurons_list = [[input_layer, 32, 1], [input_layer, 64, 1], [input_layer, 128, 1], [input_layer, 32, 64, 1], [input_layer, 64, 128, 1], [input_layer, 32, 128, 1], [input_layer, 32, 64, 128, 1], [input_layer, 32, 32, 128, 1], [input_layer, 64, 128, 32, 1]]
+    lambda_list = [1e-5, 1e-3, 1e-1]
     activation_fn_list = ["relu", "tanh"]
-    best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, lambda_list = lambda_list, num_neurons_list = num_neurons_list, activation_fn_list=activation_fn_list, dir = dir, momentum=False)
+    minibatch_size_list = [64]
+    num_epochs_list = [50]
+    best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, lambda_list = lambda_list, num_neurons_list = num_neurons_list, activation_fn_list=activation_fn_list, num_epochs_list= num_epochs_list, minibatch_size_list= minibatch_size_list, dir = dir)
 
     # print the test rmse
     test_rmse = evaluate_model_rmse(X_test, best_parameters, y_test, activation_function)

@@ -2,7 +2,7 @@ from Backpropagation import *
 from UtilsFunctions import *
 
 
-def model(X, y, num_neurons, learning_rate=0.01, num_epochs=50, activation_fn="relu", lambda_r=0, momentum=True, regularization = 0, mini_batch_size=64):
+def model(X, y, num_neurons, learning_rate, epochs, activation_fn, lambda_r, regularization, minibatch_size):
 
     # get number of examples
     m = X.shape[1]
@@ -17,10 +17,10 @@ def model(X, y, num_neurons, learning_rate=0.01, num_epochs=50, activation_fn="r
     metric_list = []
     cost_list = []
 
-    for i in range(num_epochs):
+    for i in range(epochs):
         diminishing_stepsize = learning_rate / (1 + 0.01 * i)
         # Creare mini-batch
-        mini_batches = create_mini_batches(X, y, mini_batch_size)
+        mini_batches = create_mini_batches(X, y, minibatch_size)
 
         for mini_batch in mini_batches:
             (mini_batch_X, mini_batch_y) = mini_batch
@@ -32,7 +32,7 @@ def model(X, y, num_neurons, learning_rate=0.01, num_epochs=50, activation_fn="r
             grads = L_model_backward_reg(AL, mini_batch_y, caches, activation_fn, lambda_r, regularization)
 
             # Update parameters
-            parameters, previous_parameters = update_parameters(parameters, grads, diminishing_stepsize, previous_parameters, momentum)
+            parameters, previous_parameters = update_parameters(parameters, grads, diminishing_stepsize, previous_parameters)
 
 
         AL, caches = L_model_forward(X, parameters, activation_fn)
@@ -98,7 +98,7 @@ def initialize_parameters(num_neurons, activation_fn):
     return parameters, previous_parameters
 
 
-def update_parameters(parameters, grads, learning_rate, previous_parameters, momentum=True, beta=0.9):
+def update_parameters(parameters, grads, learning_rate, previous_parameters, beta=0.9):
     L = len(parameters) // 2
     prev_parameters = parameters
 
@@ -107,12 +107,8 @@ def update_parameters(parameters, grads, learning_rate, previous_parameters, mom
         grads["dW" + str(l)] = np.clip(grads["dW" + str(l)], -5, 5)
         grads["db" + str(l)] = np.clip(grads["db" + str(l)], -5, 5)
 
-        if momentum:
-            parameters["W" + str(l)] = parameters["W" + str(l)] - learning_rate * grads["dW" + str(l)] + beta * (parameters["W" + str(l)] - previous_parameters["W" + str(l)])
-            parameters["b" + str(l)] = parameters["b" + str(l)] - learning_rate * grads["db" + str(l)] + beta * (parameters["b" + str(l)] - previous_parameters["b" + str(l)])
-        else:
-            parameters["W" + str(l)] = parameters["W" + str(l)] - learning_rate * grads["dW" + str(l)]
-            parameters["b" + str(l)] = parameters["b" + str(l)] - learning_rate * grads["db" + str(l)]
+        parameters["W" + str(l)] = parameters["W" + str(l)] - learning_rate * grads["dW" + str(l)] + beta * (parameters["W" + str(l)] - previous_parameters["W" + str(l)])
+        parameters["b" + str(l)] = parameters["b" + str(l)] - learning_rate * grads["db" + str(l)] + beta * (parameters["b" + str(l)] - previous_parameters["b" + str(l)])
 
     return parameters, prev_parameters
 
