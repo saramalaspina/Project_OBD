@@ -1,0 +1,5 @@
+Time spent for cross validation is 0:38.53 min
+
+Best configuration is [11, 10, 20, 1] using no regularization, with activation function tanh
+
+The test rmse is: 0.16879231399968614
