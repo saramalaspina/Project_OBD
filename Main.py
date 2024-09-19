@@ -13,6 +13,7 @@ def main():
 
     if dataset == "1":
         X_train, X_val, X_test, y_train, y_val, y_test = AirQualityData()
+        dir = "airquality"
     elif dataset == "2":
         return 0
     else:

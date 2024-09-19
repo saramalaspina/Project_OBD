@@ -9,7 +9,7 @@ from UtilsFile import add_csv_line
 
 def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_list, dir, activation_fn_list, momentum=True, learning_rate=0.1, num_epochs=50, print_debug=True, mini_batch_size=64):
     best_parameters = None
-    best_rmse = 0.0
+    best_rmse = float('inf')
     best_neurons = None
     best_lambda = None
     best_error = None
@@ -43,13 +43,14 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
 
     def update_best_model(result):
         nonlocal best_rmse, best_parameters, best_neurons, best_lambda, best_error, error_list_final_model, best_activation_fn, best_regularization
-        if result['rmse'] > best_rmse:
+        if result['rmse'] < best_rmse:
             best_rmse = result['rmse']
             best_parameters = result['parameters']
             best_neurons = result['num_neurons']
             best_lambda = result['lambda']
             best_error = result['error']
             error_list_final_model = result['error_list']
+            best_activation_fn = result['activation_fn']
             best_regularization = result['regularization']
 
     results = []

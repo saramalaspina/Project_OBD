@@ -41,7 +41,7 @@ def AirQualityData():
         train_data = train_data.drop_duplicates()
 
     numerical = train_data.loc[:, (train_data.dtypes == int) | (train_data.dtypes == float)].columns.tolist()
-    plot_features(train_data, numerical, dir = "AirQuality")
+    plot_features(train_data, numerical, dir = "airquality")
 
 
     numerical_features = ['PT08.S1(CO)', 'PT08.S2(NMHC)', 'PT08.S3(NOx)', 'PT08.S4(NO2)', 'PT08.S5(O3)', 'T', 'RH', 'AH', 'CO(GT)', 'NOx(GT)', 'NO2(GT)']

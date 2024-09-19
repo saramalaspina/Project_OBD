@@ -64,4 +64,4 @@ def plot_features(data, features, dir):
         plt.xlabel(feature, fontsize = 10)
         plt.ylabel("count", fontsize = 10)
         plt.grid(linewidth = 0.3)
-        plt.savefig('Plots/' + dir + '/' + feature + '.png')
+        plt.savefig('plots/' + dir + '/features/' + feature + '.png')
