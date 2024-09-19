@@ -1,25 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define activation functions that will be used in forward propagation
-def tanh(Z):
-    A = np.tanh(Z)
-    return A, Z
-
-
-def relu(Z):
-    A = np.maximum(0, Z)
-    return A, Z
-
-# Define derivative of activation functions w.r.t z that will be used in back-propagation
 def tanh_gradient(dA, Z):
-    A, Z = tanh(Z)
+    A = np.tanh(Z)
     dZ = dA * (1 - np.square(A))
     return dZ
 
 def relu_gradient(dA, Z):
 
-    A, Z = relu(Z)
+    A = np.maximum(0, Z)
     dZ = np.multiply(dA, np.int64(A > 0))
 
     return dZ
@@ -75,7 +64,7 @@ def create_mini_batches(X, y, mini_batch_size):
     return mini_batches
 
 
-def plotError(error_list, num_iterations, dir, model_name="final_model_error", activation_fn="relu"):
+def plotError(error_list, num_iterations, dir, model_name="final_model_error"):
     iterations = list(range(0, num_iterations))
     plt.figure(figsize=(10, 6))
     plt.plot(iterations, error_list, marker='', linestyle='-', color='b', linewidth=1)
@@ -83,6 +72,6 @@ def plotError(error_list, num_iterations, dir, model_name="final_model_error", a
     plt.ylabel('Loss')
     plt.title('Loss through training')
     plt.grid(True)
-    plt.savefig('plots/' + dir + '/' + activation_fn + "/" + model_name + '.png')
-    #plt.show()
+    plt.savefig('plots/' + dir + '/result/' + model_name + '.png')
     plt.close()
+

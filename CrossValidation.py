@@ -27,8 +27,11 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
         rmse = evaluate_model_rmse(X_val, parameters, Y_val, activation_fn)
 
         if print_debug:
-            print(
-                f"The RMSE for model {num_neurons} with {regularization_list[regularization]} regularization and lambda {lambda_r}: ", rmse)
+            if regularization == 0:
+                text = f"RMSE for model {num_neurons} with no regularization and hidden activation function {activation_fn}: "+str(rmse)
+            else:
+                text = f"RMSE for model {num_neurons} with regularization {regularization_list[regularization]}, lambda {lambda_r} and hidden activation function {activation_fn}: "+str(rmse)
+            print(text)
 
         return {
             'activation_fn': activation_fn,
@@ -87,11 +90,12 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
         text = f"Best configuration is {best_neurons} using {regularization_list[best_regularization]} with lambda {best_lambda} and activation function {best_activation_fn}"
 
     print(text)
+    print("The RMSE on validation set is: "+str(best_rmse))
 
-    with open(f'plots/{dir}/{best_activation_fn}/final_result', "w") as file:
+    with open(f'plots/{dir}/result/final_result', "w") as file:
         file.write(f"Time spent for cross validation is {int(min)}:{sec:.2f} min\n\n")
         file.write(text + "\n\n")
 
-    plotError(error_list_final_model, len(error_list_final_model), dir, activation_fn=best_activation_fn)
+    plotError(error_list_final_model, len(error_list_final_model), dir)
 
     return best_parameters, best_activation_fn

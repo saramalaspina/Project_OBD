@@ -1,3 +1,5 @@
+from scipy.stats import moment
+
 from AirQualityPreprocessing import *
 from CrossValidation import *
 
@@ -24,13 +26,13 @@ def main():
     num_neurons_list = [[input_layer, 10, 20, 1], [input_layer, 50, 30, 1]]  # da scegliere
     lambda_list = [0.01, 0.1, 0.5]
     activation_fn_list = ["relu", "tanh"]
-    best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, lambda_list = lambda_list, num_neurons_list = num_neurons_list, activation_fn_list=activation_fn_list, dir = dir)
+    best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, lambda_list = lambda_list, num_neurons_list = num_neurons_list, activation_fn_list=activation_fn_list, dir = dir, momentum=False)
 
-    # print the test accuracy
-    rmse = evaluate_model_rmse(X_test, best_parameters, y_test, activation_function)
-    text = "The test rmse is: " + str(rmse)
+    # print the test rmse
+    test_rmse = evaluate_model_rmse(X_test, best_parameters, y_test, activation_function)
+    text = "The RMSE on test set is: " + str(test_rmse)
     print(text)
-    with open('plots/' + dir + '/' + activation_function + '/final_result', "a") as file:
+    with open('plots/' + dir + '/result/final_result', "a") as file:
         file.write(text + "\n")
 
 

@@ -1,4 +1,3 @@
-import numpy as np
 from UtilsFunctions import *
 
 # forward propagation con funzione di attivazione lineare
@@ -32,17 +31,17 @@ def linear_forward(A_prev, W, b):
 def linear_activation_forward(A_prev, W, b, activation_fn):
 
     assert activation_fn == "relu" or activation_fn == "tanh"
-
-    Z, linear_cache = linear_forward(A_prev, W, b)
+    Z = np.dot(W, A_prev) + b
 
     if activation_fn == "relu":
-        A, activation_cache = relu(Z)
+        A = np.maximum(0, Z)
     elif activation_fn == "tanh":
-        A, activation_cache = tanh(Z)
+        A = np.tanh(Z)
 
     assert A.shape == (W.shape[0], A_prev.shape[1])
 
-    cache = (linear_cache, activation_cache)
+    linear_cache = (A_prev, W, b)
+    cache = (linear_cache, Z)
 
     return A, cache
 
@@ -92,5 +91,3 @@ def linear_backward_reg(dZ, cache, lambda_r=0, regularization=0):
     assert (db.shape == b.shape)
 
     return dA_prev, dW, db
-
-
