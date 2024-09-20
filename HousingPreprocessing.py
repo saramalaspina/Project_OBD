@@ -22,11 +22,6 @@ def HousingData():
     numerical = train_data.select_dtypes(include=['number']).columns
     categorical = train_data.select_dtypes(include=['object', 'category']).columns
 
-    train_data = train_data[train_data["total_rooms"] <= 22000]
-    train_data = train_data[train_data["total_bedrooms"] <= 4000]
-    train_data = train_data[train_data["population"] <= 10000]
-    train_data = train_data[train_data["households"] <= 3500]
-
     plot_features(train_data, numerical, dir = "housing")
     plot_features(train_data, categorical, dir="housing")
 

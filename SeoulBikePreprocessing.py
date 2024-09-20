@@ -12,9 +12,6 @@ def SeoulBikeData():
     data['Month'] = data['Date'].dt.month.astype(int)
     data.drop('Date', axis=1, inplace=True)
 
-    # handling 0 target values
-    data = data[(data["Rented Bike Count"] != 0)]
-
     X = data.copy()
     y = X.pop('Rented Bike Count')  # target column
 
@@ -27,10 +24,6 @@ def SeoulBikeData():
 
     numerical = train_data.select_dtypes(include=['number']).columns
     categorical = train_data.select_dtypes(include=['object', 'category']).columns
-
-    train_data = train_data[(train_data["Humidity"] >= 10)]
-    train_data = train_data[(train_data["Rainfall"] <= 5)]
-    train_data = train_data[(train_data["Snowfall"] <= 4)]
 
     plot_features(train_data, numerical, dir = "seoulbike")
     plot_features(train_data, categorical, dir="seoulbike")
