@@ -1,0 +1,7 @@
+Time spent for cross validation is 8:40.17 min
+
+Best configuration is [13, 128, 64, 64, 1] using L2 with lambda 0.1, activation function relu, 70 epochs and minibatch of size 32
+
+The RMSE on validation set is: 53451.24099590898
+
+The RMSE on test set is: 55609.942567910584
