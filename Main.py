@@ -2,6 +2,7 @@ from scipy.stats import moment
 
 from AirQualityPreprocessing import *
 from CrossValidation import *
+from HousingPreprocessing import HousingData
 from SeoulBikePreprocessing import SeoulBikeData
 
 
@@ -10,7 +11,7 @@ def main():
     np.set_printoptions(suppress=True)
 
     dataset = menu(
-        "Which dataset do you want to use?\n[1] Air Quality\n[2] Seoul Bike Sharing Demand\n[3] Metro Interstate Traffic Volume",
+        "Which dataset do you want to use?\n[1] Air Quality\n[2] Seoul Bike Sharing Demand\n[3] Median House Value",
         ["1", "2", "3"]
     )
 
@@ -21,7 +22,8 @@ def main():
         X_train, X_val, X_test, y_train, y_val, y_test = SeoulBikeData()
         dir = "seoulbike"
     else:
-        return 0
+        X_train, X_val, X_test, y_train, y_val, y_test = HousingData()
+        dir = "housing"
 
     # definisci possibili scelte per cross validation
     input_layer = X_train.shape[0]
