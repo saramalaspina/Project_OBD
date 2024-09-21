@@ -23,19 +23,20 @@ def install_package(package_mod, package_nm):
         subprocess.check_call([sys.executable, "-m", "pip", "install", package_mod])
 
 
-# Verifica se pip è installato
-check_pip()
+def start():
+    # Verifica se pip è installato
+    check_pip()
 
-# Elenco dei pacchetti da controllare
-packages = {
-    "numpy": "numpy",
-    "matplotlib": "matplotlib",
-    "pandas": "pandas",
-    "scikit-learn": "scikit-learn"
-}
+    # Elenco dei pacchetti da controllare
+    packages = {
+        "numpy": "numpy",
+        "matplotlib": "matplotlib",
+        "pandas": "pandas",
+        "scikit-learn": "scikit-learn"
+    }
 
-# Verifica e installa i pacchetti necessari
-for package_name, module_name in packages.items():
-    install_package(module_name, package_name)
+    # Verifica e installa i pacchetti necessari
+    for package_name, module_name in packages.items():
+        install_package(module_name, package_name)
 
-print("Tutti i pacchetti sono stati verificati e installati se necessario.")
+    print("Tutti i pacchetti sono stati verificati e installati se necessario.")

@@ -4,9 +4,11 @@ from AirQualityPreprocessing import *
 from CrossValidation import *
 from HousingPreprocessing import HousingData
 from SeoulBikePreprocessing import SeoulBikeData
+from Start import *
 
 
 def main():
+    start()
     np.random.seed(123456)
     np.set_printoptions(suppress=True)
 
@@ -30,7 +32,7 @@ def main():
     num_neurons_list = [[input_layer, 128, 1], [input_layer, 128, 32, 1], [input_layer, 128, 64, 1], [input_layer, 128, 64, 32, 1], [input_layer, 128, 64, 64, 1]]
     lambda_list = [1e-3, 1e-1]
     activation_fn_list = ["relu", "tanh"]
-    minibatch_size_list = [128]
+    minibatch_size_list = [100]
     num_epochs_list = [80]
     best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size_list, dir)
 
