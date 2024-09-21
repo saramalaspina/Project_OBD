@@ -100,6 +100,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     else:
         text = f"Best configuration is {best_neurons} using {regularization_list[best_regularization]} with lambda {best_lambda}, activation function {best_activation_fn}, {best_epochs} epochs and minibatch of size {best_minibatch_size}"
 
+    print(f"The error on training set is: {best_error}")
     print(text)
     text2 = "The RMSE on validation set is: "+str(best_rmse)
     print(text2)

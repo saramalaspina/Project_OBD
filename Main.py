@@ -29,10 +29,10 @@ def main():
 
     # definisci possibili scelte per cross validation
     input_layer = X_train.shape[0]
-    num_neurons_list = [[input_layer, 128, 1], [input_layer, 128, 32, 1], [input_layer, 128, 64, 1], [input_layer, 128, 64, 32, 1], [input_layer, 128, 64, 64, 1]]
+    num_neurons_list = [[input_layer, 128, 1], [input_layer, 128, 64, 1], [input_layer, 128, 64, 64, 1]]
     lambda_list = [1e-3, 1e-1]
     activation_fn_list = ["relu", "tanh"]
-    minibatch_size_list = [100]
+    minibatch_size_list = [128]
     num_epochs_list = [80]
     best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size_list, dir)
 
