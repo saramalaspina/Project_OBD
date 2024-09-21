@@ -70,12 +70,14 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
         futures = []
         for epochs in num_epochs_list:
             for minibatch_size in minibatch_size_list:
-                for activation_fn in activation_fn_list:
-                    for num_neurons in num_neurons_list:
-                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, 0, 0, activation_fn))
+                for num_neurons in num_neurons_list:
+                    futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, 0, 0, "relu"))
+                    futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, 0, 0, "tanh"))
                     for lambda_r in lambda_list:
-                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 1, activation_fn))
-                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 2, activation_fn))
+                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 1, "relu"))
+                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 2, "relu"))
+                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 1, "tanh"))
+                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 2, "tanh"))
 
         # Aspetta che tutti i thread siano completati
         concurrent.futures.wait(futures)
