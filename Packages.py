@@ -2,32 +2,28 @@ import subprocess
 import sys
 import importlib
 
-# Funzione per verificare se pip è installato
 def check_pip():
     try:
         import pip
-        print("pip è già installato.")
+        print("pip is already installed.")
     except ImportError:
-        print("pip non è installato. Installazione in corso...")
+        print("pip is not installed. Installation in progress...")
         subprocess.check_call([sys.executable, "-m", "ensurepip", "--upgrade"])
-        print("pip installato correttamente.")
+        print("pip has been installed successfully.")
 
 
-# Funzione per installare un pacchetto Python
 def install_package(package_mod, package_nm):
     try:
         importlib.import_module(package_nm)
-        print(f"{package_nm} è già installato.")
+        print(f"{package_nm} is already installed.")
     except ImportError:
-        print(f"{package_nm} non è installato. Installazione in corso...")
+        print(f"{package_nm} is not installed. Installation in progress...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", package_mod])
 
 
 def start():
-    # Verifica se pip è installato
     check_pip()
 
-    # Elenco dei pacchetti da controllare
     packages = {
         "numpy": "numpy",
         "matplotlib": "matplotlib",
@@ -35,8 +31,10 @@ def start():
         "scikit-learn": "scikit-learn"
     }
 
-    # Verifica e installa i pacchetti necessari
     for package_name, module_name in packages.items():
         install_package(module_name, package_name)
 
-    print("Tutti i pacchetti sono stati verificati e installati se necessario.")
+    print("All packages have been installed successfully.\n")
+
+if __name__ == "__main__":
+    start()

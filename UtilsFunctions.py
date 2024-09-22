@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
 # Roll a dictionary into a single vector.
 def dictionary_to_vector(params_dict):
@@ -46,5 +47,21 @@ def plotError(error_list, num_iterations, dir, model_name="final_model_error"):
     plt.grid(True)
     plt.savefig('plots/' + dir + '/result/' + model_name + '.png')
     plt.close()
+
+
+def add_csv_line(model, regularization, lambd, error, rmse, mae, activation_fn, epochs, minibatch_size, dir):
+    # Apro il file in modalità 'append' per aggiungere righe senza sovrascrivere
+    with open('plots/' + dir + '/result/results.csv', mode='a', newline='') as file:
+        nomi_colonne = ['model', 'regularization', 'lambda', 'error', 'rmse', 'mae', 'activation_fn', 'epochs', 'minibatch_size']
+        nuova_riga = {'model': model, 'regularization': regularization, 'lambda': lambd, 'error': error, 'rmse': rmse, 'mae': mae, 'activation_fn': activation_fn, 'epochs': epochs, 'minibatch_size': minibatch_size}
+        writer = csv.DictWriter(file, fieldnames=nomi_colonne)
+
+        # Scrivo l'intestazione (solo se il file è vuoto)
+        if file.tell() == 0:
+            writer.writeheader()
+
+        # Aggiungo la riga passata come argomento
+        writer.writerow(nuova_riga)
+
 
 

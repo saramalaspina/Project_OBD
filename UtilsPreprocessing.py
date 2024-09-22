@@ -65,3 +65,17 @@ def plot_features(data, features, dir):
         plt.ylabel("count", fontsize = 10)
         plt.grid(linewidth = 0.3)
         plt.savefig('plots/' + dir + '/features/' + feature + '.png')
+
+def reshape_dataset(X_train, y_train, X_val, y_val, X_test, y_test):
+    y_train = y_train.to_numpy()
+    y_val = y_val.to_numpy()
+    y_test = y_test.to_numpy()
+
+    X_train = X_train.T
+    y_train = y_train.reshape(1, -1)
+    X_val = X_val.T
+    y_val = y_val.reshape(1, -1)
+    X_test = X_test.T
+    y_test = y_test.reshape(1, -1)
+
+    return X_train, y_train, X_val, y_val, X_test, y_test

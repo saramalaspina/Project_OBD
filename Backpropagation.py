@@ -1,7 +1,7 @@
 from UtilsFunctions import *
 
 # forward propagation con funzione di attivazione lineare
-def L_model_forward(X, parameters, activation_fn="relu"):
+def forward_propagation(X, parameters, activation_fn="relu"):
     Z = X
     caches = []
     L = len(parameters) // 2
@@ -46,7 +46,7 @@ def linear_activation_forward(Z_prev, W, b, activation_fn):
     return Z, cache
 
 
-def L_model_backward_reg(AL, y, caches, activation_fn="relu", lambda_r=0, regularization=0):
+def backward_propagation(AL, y, caches, activation_fn="relu", lambda_r=0, regularization=0):
     y = y.reshape(AL.shape)
     L = len(caches)
     grads = {}
