@@ -6,60 +6,45 @@ def forward_propagation(X, parameters, activation_fn="relu"):
     caches = []
     L = len(parameters) // 2
 
+    assert activation_fn == "relu" or activation_fn == "tanh"
+    if activation_fn == "relu":
+        def activation_function(A):
+            return np.maximum(0, A)
+    elif activation_fn == "tanh":
+        def activation_function(A):
+            return np.tanh(A)
+
     # Forward propagate through hidden layers
     for l in range(1, L):
         Z_prev = Z
-        Z, cache = linear_activation_forward(Z_prev, parameters["W" + str(l)], parameters["b" + str(l)],
-                                             activation_fn=activation_fn)
+        A = np.dot(parameters["W" + str(l)], Z_prev) + parameters["b" + str(l)]
+        Z = activation_function(A)
+        cache = ((Z_prev, parameters["W" + str(l)], parameters["b" + str(l)]), A)
         caches.append(cache)
 
     # Output layer: no activation function (linear)
-    AL, cache = linear_forward(Z, parameters["W" + str(L)], parameters["b" + str(L)])
+    AL = np.dot(parameters["W" + str(L)], Z) + parameters["b" + str(L)]
+    cache = (Z, parameters["W" + str(L)], parameters["b" + str(L)])
     caches.append(cache)
 
     assert AL.shape == (1, X.shape[1])
 
     return AL, caches
 
-
-def linear_forward(Z_prev, W, b):
-    AL = np.dot(W, Z_prev) + b
-    cache = (Z_prev, W, b)
-
-    return AL, cache
-
-
-# calcolo Z nella forward propagation
-def linear_activation_forward(Z_prev, W, b, activation_fn):
-    assert activation_fn == "relu" or activation_fn == "tanh"
-    A = np.dot(W, Z_prev) + b
-
-    if activation_fn == "relu":
-        Z = np.maximum(0, A)
-    elif activation_fn == "tanh":
-        Z = np.tanh(A)
-
-    assert Z.shape == (W.shape[0], Z_prev.shape[1])
-
-    cache = ((Z_prev, W, b), A)
-
-    return Z, cache
-
-
 def backward_propagation(AL, y, caches, activation_fn="relu", lambda_r=0, regularization=0):
-    y = y.reshape(AL.shape)
+    #y = y.reshape(AL.shape) FUNZIONA ANCHE SE LO TOLGO QUINDI A CHE CAZZO SERVE
     L = len(caches)
     grads = {}
 
-    dAL = AL - y
+    #dAL = AL - y
+    dA = AL - y
 
-    grads["dA" + str(L - 1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_backward_reg(dAL, caches[L - 1],
-                                                                                               lambda_r, regularization)
+    #grads["dA" + str(L - 1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_backward_reg(dAL, caches[L - 1],lambda_r, regularization)
+    dA, grads["dW" + str(L)], grads["db" + str(L)] = linear_backward_reg(dA, caches[L - 1],lambda_r, regularization)
 
     for l in range(L - 1, 0, -1):
         current_cache = caches[l - 1]
-        grads["dA" + str(l - 1)], grads["dW" + str(l)], grads["db" + str(l)] = linear_activation_backward_reg(
-            grads["dA" + str(l)], current_cache, activation_fn, lambda_r, regularization)
+        dA, grads["dW" + str(l)], grads["db" + str(l)] = linear_activation_backward_reg(dA, current_cache, activation_fn, lambda_r, regularization)
     return grads
 
 

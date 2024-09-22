@@ -28,7 +28,7 @@ def start():
         "numpy": "numpy",
         "matplotlib": "matplotlib",
         "pandas": "pandas",
-        "scikit-learn": "scikit-learn"
+        "sklearn": "scikit-learn"
     }
 
     for package_name, module_name in packages.items():
