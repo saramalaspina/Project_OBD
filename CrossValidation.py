@@ -11,7 +11,6 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     best_epochs = None
     best_minibatch_size = None
     best_lambda = None
-    best_error = None
     final_mae = None
     error_list_final_model = None
     best_activation_fn = None
@@ -24,7 +23,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
 
     def evaluate_model_CV(num_neurons, epochs, minibatch_size, lambda_r, regularization, activation_fn):
 
-        parameters, error, error_list = model(X_train, Y_train, num_neurons, 0.01, epochs, activation_fn, lambda_r, regularization, minibatch_size)
+        parameters, error_list = model(X_train, Y_train, num_neurons, 0.01, epochs, activation_fn, lambda_r, regularization, minibatch_size)
         rmse = evaluate_model_rmse(X_val, parameters, Y_val, activation_fn)
         mae = evaluate_model_mae(X_val, parameters, Y_val, activation_fn)
 
@@ -44,13 +43,12 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
             'epochs': epochs,
             'minibatch_size': minibatch_size,
             'lambda': lambda_r,
-            'error': error,
             'error_list': error_list,
             'regularization': regularization
         }
 
     def update_best_model(result):
-        nonlocal best_rmse, best_parameters, best_neurons, best_epochs, best_minibatch_size, best_lambda, best_error, final_mae, error_list_final_model, best_activation_fn, best_regularization
+        nonlocal best_rmse, best_parameters, best_neurons, best_epochs, best_minibatch_size, best_lambda, final_mae, error_list_final_model, best_activation_fn, best_regularization
         if result['rmse'] < best_rmse:
             best_rmse = result['rmse']
             final_mae = result['mae']
@@ -59,7 +57,6 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
             best_epochs = result['epochs']
             best_minibatch_size = result['minibatch_size']
             best_lambda = result['lambda']
-            best_error = result['error']
             error_list_final_model = result['error_list']
             best_activation_fn = result['activation_fn']
             best_regularization = result['regularization']
@@ -89,7 +86,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
             results.append(result)
 
     for result in results:
-        add_csv_line(result['num_neurons'], regularization_list[result['regularization']], result['lambda'], result['error'], result['rmse'], result['mae'], result['activation_fn'], result['epochs'], result['minibatch_size'], dir)
+        add_csv_line(result['num_neurons'], regularization_list[result['regularization']], result['lambda'], result['rmse'], result['mae'], result['activation_fn'], result['epochs'], result['minibatch_size'], dir)
         update_best_model(result)
 
     end = time.time()
@@ -101,7 +98,6 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     else:
         text = f"Best configuration is {best_neurons} using {regularization_list[best_regularization]} with lambda {best_lambda}, activation function {best_activation_fn}, {best_epochs} epochs and minibatch of size {best_minibatch_size}\n"
 
-    print(f"The error on training set is: {best_error}")
     print(text)
     text2 = "The RMSE on validation set is: "+str(best_rmse)+"\nThe MAE on validation set is: "+str(final_mae)
     print(text2)

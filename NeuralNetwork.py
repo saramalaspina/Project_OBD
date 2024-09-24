@@ -26,14 +26,13 @@ def model(X, y, num_neurons, learning_rate, epochs, activation_fn, lambda_r, reg
 
             AL, caches = forward_propagation(mini_batch_X, parameters, activation_fn)
 
-            grads = backward_propagation(AL, mini_batch_y, caches, activation_fn, lambda_r, regularization)
+            gradient = backward_propagation(AL, mini_batch_y, caches, parameters, activation_fn, lambda_r, regularization)
 
-            parameters, previous_parameters = update_parameters(parameters, grads, diminishing_stepsize, previous_parameters)
+            parameters, previous_parameters = update_parameters(parameters, gradient, diminishing_stepsize, previous_parameters)
 
 
         AL, caches = forward_propagation(X, parameters, activation_fn)
         reg_cost = compute_cost_reg(AL, y, parameters, lambda_r, regularization)
-
         cost_list.append(reg_cost)
 
     return parameters, reg_cost, cost_list
@@ -101,17 +100,17 @@ def initialize_parameters(num_neurons, activation_fn):
     return parameters, previous_parameters
 
 
-def update_parameters(parameters, grads, learning_rate, previous_parameters, beta=0.9):
+def update_parameters(parameters, gradient, learning_rate, previous_parameters, beta=0.9):
     L = len(parameters) // 2
     prev_parameters = parameters
 
     for l in range(1, L + 1):
         # Gradient clipping for dW and db
-        grads["dW" + str(l)] = np.clip(grads["dW" + str(l)], -5, 5)
-        grads["db" + str(l)] = np.clip(grads["db" + str(l)], -5, 5)
+        gradient["dW" + str(l)] = np.clip(gradient["dW" + str(l)], -5, 5)
+        gradient["db" + str(l)] = np.clip(gradient["db" + str(l)], -5, 5)
 
-        parameters["W" + str(l)] = parameters["W" + str(l)] - learning_rate * grads["dW" + str(l)] + beta * (parameters["W" + str(l)] - previous_parameters["W" + str(l)])
-        parameters["b" + str(l)] = parameters["b" + str(l)] - learning_rate * grads["db" + str(l)] + beta * (parameters["b" + str(l)] - previous_parameters["b" + str(l)])
+        parameters["W" + str(l)] = parameters["W" + str(l)] - learning_rate * gradient["dW" + str(l)] + beta * (parameters["W" + str(l)] - previous_parameters["W" + str(l)])
+        parameters["b" + str(l)] = parameters["b" + str(l)] - learning_rate * gradient["db" + str(l)] + beta * (parameters["b" + str(l)] - previous_parameters["b" + str(l)])
 
     return parameters, prev_parameters
 
