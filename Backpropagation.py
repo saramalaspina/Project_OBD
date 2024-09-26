@@ -1,7 +1,7 @@
 from UtilsFunctions import *
 
 # forward propagation con funzione di attivazione lineare
-def forward_propagation(X, parameters, activation_fn="relu"):
+def forward_propagation(X, parameters, activation_fn):
     Z = X
     caches = []
     L = len(parameters) // 2
@@ -29,7 +29,7 @@ def forward_propagation(X, parameters, activation_fn="relu"):
     return AL, caches
 
 def backward_propagation(AL, y, caches, parameters, activation_fn="relu", lambda_r=0, regularization=0):
-    #y = y.reshape(AL.shape) FUNZIONA ANCHE SE LO TOLGO QUINDI A CHE CAZZO SERVE
+    y = y.reshape(AL.shape)
     L = len(caches)
     gradient = {}
 

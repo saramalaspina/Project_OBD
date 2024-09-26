@@ -35,7 +35,7 @@ def model(X, y, num_neurons, learning_rate, epochs, activation_fn, lambda_r, reg
         reg_cost = compute_cost_reg(AL, y, parameters, lambda_r, regularization)
         cost_list.append(reg_cost)
 
-    return parameters, reg_cost, cost_list
+    return parameters, cost_list
 
 
 # metodo per calcolare la funzione costo regolarizzata
