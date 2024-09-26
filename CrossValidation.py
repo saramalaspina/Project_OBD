@@ -4,12 +4,11 @@ from NeuralNetwork import *
 from UtilsFunctions import *
 import concurrent.futures
 
-def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size_list, dir, print_debug=True):
+def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size, dir, print_debug=True):
     best_parameters = None
     best_rmse = float('inf')
     best_neurons = None
     best_epochs = None
-    best_minibatch_size = None
     best_lambda = None
     final_mae = None
     error_list_final_model = None
@@ -48,14 +47,13 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
         }
 
     def update_best_model(result):
-        nonlocal best_rmse, best_parameters, best_neurons, best_epochs, best_minibatch_size, best_lambda, final_mae, error_list_final_model, best_activation_fn, best_regularization
+        nonlocal best_rmse, best_parameters, best_neurons, best_epochs, best_lambda, final_mae, error_list_final_model, best_activation_fn, best_regularization
         if result['rmse'] < best_rmse:
             best_rmse = result['rmse']
             final_mae = result['mae']
             best_parameters = result['parameters']
             best_neurons = result['num_neurons']
             best_epochs = result['epochs']
-            best_minibatch_size = result['minibatch_size']
             best_lambda = result['lambda']
             error_list_final_model = result['error_list']
             best_activation_fn = result['activation_fn']
@@ -67,13 +65,12 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
         for epochs in num_epochs_list:
-            for minibatch_size in minibatch_size_list:
-                for activation in activation_fn_list:
-                    for num_neurons in num_neurons_list:
-                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, 0, 0, activation))
-                        for lambda_r in lambda_list:
-                            futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 1, activation))
-                            futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 2, activation))
+            for activation in activation_fn_list:
+                for num_neurons in num_neurons_list:
+                    futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, 0, 0, activation))
+                    for lambda_r in lambda_list:
+                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 1, activation))
+                        futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 2, activation))
 
         # Aspetta che tutti i thread siano completati
         concurrent.futures.wait(futures)
@@ -92,9 +89,9 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     print(f"End cross validation. Time spent for cross validation is {int(min)}:{sec:.2f} min\n")
 
     if best_regularization == 0:
-        text = f"Best configuration is {best_neurons} using no regularization, with activation function {best_activation_fn}, {best_epochs} epochs and minibatch of size {best_minibatch_size}\n"
+        text = f"Best configuration is {best_neurons} using no regularization, with activation function {best_activation_fn}, {best_epochs} epochs and minibatch of size {minibatch_size}\n"
     else:
-        text = f"Best configuration is {best_neurons} using {regularization_list[best_regularization]} with lambda {best_lambda}, activation function {best_activation_fn}, {best_epochs} epochs and minibatch of size {best_minibatch_size}\n"
+        text = f"Best configuration is {best_neurons} using {regularization_list[best_regularization]} with lambda {best_lambda}, activation function {best_activation_fn}, {best_epochs} epochs and minibatch of size {minibatch_size}\n"
 
     print(text)
     text2 = "The RMSE on validation set is: "+str(best_rmse)+"\nThe MAE on validation set is: "+str(final_mae)

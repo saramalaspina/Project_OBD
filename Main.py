@@ -16,21 +16,23 @@ def main():
     if dataset == "1":
         X_train, X_val, X_test, y_train, y_val, y_test = AirQualityData()
         dir = "airquality"
+        minibatch_size = 32
     elif dataset == "2":
         X_train, X_val, X_test, y_train, y_val, y_test = SeoulBikeData()
         dir = "seoulbike"
+        minibatch_size = 64
     else:
         X_train, X_val, X_test, y_train, y_val, y_test = HousingData()
         dir = "housing"
+        minibatch_size = 256
 
     # definisci possibili scelte per cross validation
     input_layer = X_train.shape[0]
     num_neurons_list = [[input_layer, 128, 1], [input_layer, 128, 64, 1], [input_layer, 64, 32, 1], [input_layer, 128, 64, 64, 1], [input_layer, 128, 64, 32, 1]]
     lambda_list = [1e-3, 1e-2, 1e-1]
     activation_fn_list = ["relu","tanh"]
-    minibatch_size_list = [64]
-    num_epochs_list = [80]
-    best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size_list, dir)
+    num_epochs_list = [50]
+    best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size, dir)
 
     # print the test rmse and mae
     test_rmse = evaluate_model_rmse(X_test, best_parameters, y_test, activation_function)
