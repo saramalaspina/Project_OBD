@@ -24,14 +24,14 @@ def main():
     else:
         X_train, X_val, X_test, y_train, y_val, y_test = HousingData()
         dir = "housing"
-        minibatch_size = 256
+        minibatch_size = 512
 
     # definisci possibili scelte per cross validation
     input_layer = X_train.shape[0]
     num_neurons_list = [[input_layer, 128, 1], [input_layer, 128, 64, 1], [input_layer, 64, 32, 1], [input_layer, 128, 64, 64, 1], [input_layer, 128, 64, 32, 1]]
     lambda_list = [1e-3, 1e-2, 1e-1]
     activation_fn_list = ["relu","tanh"]
-    num_epochs_list = [50]
+    num_epochs_list = [80]
     best_parameters, activation_function = cross_validation(X_train, y_train, X_val, y_val, num_neurons_list, lambda_list, activation_fn_list, num_epochs_list, minibatch_size, dir)
 
     # print the test rmse and mae
