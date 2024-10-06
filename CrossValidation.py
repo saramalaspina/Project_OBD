@@ -20,6 +20,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
     start = time.time()
     print("\nStarting cross validation")
 
+    # Function used to train the model on the training set and to evaluate it on validation set
     def evaluate_model_CV(num_neurons, epochs, minibatch_size, lambda_r, regularization, activation_fn):
 
         parameters, error_list = model(X_train, Y_train, num_neurons, 0.01, epochs, activation_fn, lambda_r, regularization, minibatch_size)
@@ -46,6 +47,7 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
             'regularization': regularization
         }
 
+    # Function to evaluate the best parameters based on the minimum rmse value
     def update_best_model(result):
         nonlocal best_rmse, best_parameters, best_neurons, best_epochs, best_lambda, final_mae, error_list_final_model, best_activation_fn, best_regularization
         if result['rmse'] < best_rmse:
@@ -72,12 +74,12 @@ def cross_validation(X_train, Y_train, X_val, Y_val, num_neurons_list, lambda_li
                         futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 1, activation))
                         futures.append(executor.submit(evaluate_model_CV, num_neurons, epochs, minibatch_size, lambda_r, 2, activation))
 
-        # Aspetta che tutti i thread siano completati
+        # Wait until all threads are completed
         concurrent.futures.wait(futures)
 
-        # Raccolta dei risultati da tutti i thread completati
+        # Get the results from all threads
         for future in futures:
-            result = future.result()  # Estrai il risultato da ciascun future
+            result = future.result()
             results.append(result)
 
     for result in results:

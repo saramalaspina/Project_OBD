@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
-# Roll a dictionary into a single vector.
+# Function to roll a dictionary into a single vector
 def dictionary_to_vector(params_dict):
     count = 0
     for key in params_dict.keys():
@@ -36,7 +36,7 @@ def create_mini_batches(X, y, mini_batch_size):
 
     return mini_batches
 
-
+# Function to plot the loss through training epochs
 def plotError(error_list, num_iterations, dir, model_name="final_model_error"):
     iterations = list(range(0, num_iterations))
     plt.figure(figsize=(10, 6))
@@ -48,20 +48,17 @@ def plotError(error_list, num_iterations, dir, model_name="final_model_error"):
     plt.savefig('plots/' + dir + '/result/' + model_name + '.png')
     plt.close()
 
-
+# Function to store the results in a csv file
 def add_csv_line(model, regularization, lambd, rmse, mae, activation_fn, epochs, minibatch_size, dir):
-    # Apro il file in modalità 'append' per aggiungere righe senza sovrascrivere
     with open('plots/' + dir + '/result/results.csv', mode='a', newline='') as file:
-        nomi_colonne = ['model', 'regularization', 'lambda', 'rmse', 'mae', 'activation_fn', 'epochs', 'minibatch_size']
-        nuova_riga = {'model': model, 'regularization': regularization, 'lambda': lambd, 'rmse': rmse, 'mae': mae, 'activation_fn': activation_fn, 'epochs': epochs, 'minibatch_size': minibatch_size}
-        writer = csv.DictWriter(file, fieldnames=nomi_colonne)
+        columns = ['model', 'regularization', 'lambda', 'rmse', 'mae', 'activation_fn', 'epochs', 'minibatch_size']
+        new_row = {'model': model, 'regularization': regularization, 'lambda': lambd, 'rmse': rmse, 'mae': mae, 'activation_fn': activation_fn, 'epochs': epochs, 'minibatch_size': minibatch_size}
+        writer = csv.DictWriter(file, fieldnames=columns)
 
-        # Scrivo l'intestazione (solo se il file è vuoto)
         if file.tell() == 0:
             writer.writeheader()
 
-        # Aggiungo la riga passata come argomento
-        writer.writerow(nuova_riga)
+        writer.writerow(new_row)
 
 
 

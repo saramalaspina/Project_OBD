@@ -2,6 +2,7 @@ import subprocess
 import sys
 import importlib
 
+# Function to check if pip is installed
 def check_pip():
     try:
         import pip
@@ -11,7 +12,7 @@ def check_pip():
         subprocess.check_call([sys.executable, "-m", "ensurepip", "--upgrade"])
         print("pip has been installed successfully.")
 
-
+# Function to install a package
 def install_package(package_mod, package_nm):
     try:
         importlib.import_module(package_nm)

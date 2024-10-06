@@ -3,34 +3,29 @@ from UtilsFunctions import *
 
 
 def model(X, y, num_neurons, learning_rate, epochs, activation_fn, lambda_r, regularization, minibatch_size):
-
-    # get number of examples
-    m = X.shape[1]
-
-    # to get consistents output
     np.random.seed(1)
 
-    # initialize parameters
+    # Initialize parameters
     parameters, previous_parameters = initialize_parameters(num_neurons, activation_fn)
 
-    # initialize cost and metric list
+    # Initialize cost list
     cost_list = []
 
     for i in range(epochs):
         diminishing_stepsize = learning_rate / (1 + 0.01 * i)
-        # Creare mini-batch
+        # Create mini-batch
         mini_batches = create_mini_batches(X, y, minibatch_size)
 
         for mini_batch in mini_batches:
             (mini_batch_X, mini_batch_y) = mini_batch
 
+            # Backpropagation algorithm
             AL, caches = forward_propagation(mini_batch_X, parameters, activation_fn)
-
             gradient = backward_propagation(AL, mini_batch_y, caches, parameters, activation_fn, lambda_r, regularization)
 
             parameters, previous_parameters = update_parameters(parameters, gradient, diminishing_stepsize, previous_parameters)
 
-
+        # Evaluation of the trained model on training set
         AL, caches = forward_propagation(X, parameters, activation_fn)
         reg_cost = compute_cost_reg(AL, y, parameters, lambda_r, regularization)
         cost_list.append(reg_cost)
@@ -38,16 +33,16 @@ def model(X, y, num_neurons, learning_rate, epochs, activation_fn, lambda_r, reg
     return parameters, cost_list
 
 
-# metodo per calcolare la funzione costo regolarizzata
+# Function used to calculated regularized cost function
 def compute_cost_reg(AL, y, parameters, lambda_r=0, regularization=0):
-    # number of examples
+    # Number of examples
     m = y.shape[1]
-    # compute mean squared error (MSE)
+    # Compute mean squared error (MSE)
     mse_cost = (1 / (2 * m)) * np.sum(np.square(AL - y))
-    # convert parameters dictionary to vector
+    # Convert parameters dictionary to vector
     parameters_vector = dictionary_to_vector(parameters)
 
-    # compute the regularization penalty
+    # Compute the regularization penalty
     if regularization == 2:
         regularization_penalty = (lambda_r / (2 * m)) * np.sum(np.square(parameters_vector))
     elif regularization == 1:
@@ -55,7 +50,7 @@ def compute_cost_reg(AL, y, parameters, lambda_r=0, regularization=0):
     else:
         regularization_penalty = 0
 
-    # compute the total cost (MSE + regularization)
+    # Compute the total cost function (MSE + regularization)
     cost = mse_cost + regularization_penalty
     return cost
 

@@ -2,12 +2,12 @@ import os
 from UtilsPreprocessing import *
 
 def SeoulBikeData():
-    # read the data
+    # Read the data
     DATASET_FILENAME="SeoulBikeData.csv"
     DATASET_DIR="./dataset"
     data = pd.read_csv(os.path.join(DATASET_DIR, DATASET_FILENAME), encoding='ISO-8859-1')
 
-    #date transformation
+    # Date transformation
     data['Date'] = pd.to_datetime(data['Date'], format='%d/%m/%Y')
     data['Month'] = data['Date'].dt.month.astype(int)
     data.drop('Date', axis=1, inplace=True)
@@ -15,10 +15,10 @@ def SeoulBikeData():
     X = data.copy()
     y = X.pop('Rented Bike Count')  # target column
 
-    #split the dataset into training, validation and test set
+    # Split the dataset into training, validation and test set
     train_data, X_test, y_test, X_val, y_val = train_val_test_split(X, y)
 
-    #removal of duplicated rows of training set
+    # Removal of duplicated rows of training set
     if train_data.duplicated().sum() != 0:
         train_data = train_data.drop_duplicates()
 
@@ -33,7 +33,7 @@ def SeoulBikeData():
     X_train = train_data.copy()
     y_train = X_train.pop("Rented Bike Count")
 
-    #encoding and standardization
+    # Encoding and standardization
     X_train, X_val, X_test = encoding_and_standardization(X_train, X_val, X_test, numerical = numerical_features, categorical=categorical_features)
 
     X_train, y_train, X_val, y_val, X_test, y_test = reshape_dataset(X_train, y_train, X_val, y_val, X_test, y_test)

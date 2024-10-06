@@ -1,12 +1,13 @@
 from UtilsFunctions import *
 
-# forward propagation con funzione di attivazione lineare
 def forward_propagation(X, parameters, activation_fn):
     Z = X
     caches = []
     L = len(parameters) // 2
 
     assert activation_fn == "relu" or activation_fn == "tanh"
+
+    # Define activation gradient function outside the loop
     if activation_fn == "relu":
         activation_function = lambda A: np.maximum(0, A)
     elif activation_fn == "tanh":
@@ -22,7 +23,7 @@ def forward_propagation(X, parameters, activation_fn):
 
     # Output layer: no activation function (linear)
     AL = np.dot(parameters["W" + str(L)], Z) + parameters["b" + str(L)]
-    caches.append(Z)    #NOTA: l'ultima cache non ha A
+    caches.append(Z)
 
     assert AL.shape == (1, X.shape[1])
 
